@@ -1,12 +1,17 @@
-
+# save as check_env.py and run python check_env.py
+import sys, torch
+print('python', sys.version)
+print('torch', torch.__version__)
+print('cuda_available', torch.cuda.is_available())
+print('num_threads', torch.get_num_threads())
 
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-# os.environ['HF_HUB_OFFLINE'] = '1'
-# os.environ['TRANSFORMERS_OFFLINE'] = '1'
+os.environ['HF_HUB_OFFLINE'] = '0'  # Jiang: allow online HF downloads
+os.environ['TRANSFORMERS_OFFLINE'] = '0'  # Jiang: allow online transformers fetch
 
 
-import torch
+
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 
@@ -26,10 +31,11 @@ class MyModel:
         return answers
 
     def get_model(self):
-        # model_name = 'google/gemma-3-270m-it'
-        model_name = 'Qwen/Qwen3-4B' # Jiang: changed to Qwen3-4B
+        model_name = 'Qwen/Qwen3-1.7B' # Jiang: changed to Qwen3-4B
+        print('Loading model:', model_name)  # Jiang: debug print
 
-        cache_dir = r'/app/models'
+        cache_dir = './app/models'  # Jiang: changed to relative path
+        os.makedirs(cache_dir, exist_ok=True)  # Jiang: ensure cache dir exists
 
         tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=model_name,
                                                   cache_dir=cache_dir)
@@ -54,6 +60,8 @@ class MyModel:
                                       pad_token_id= self.tokenizer.eos_token_id)
 
         answer = self.tokenizer.decode(outputs[0][len(inputs[0]):], skip_special_tokens=True)
+        
+        print('Raw answer:', answer)  # Jiang: debug print
 
         return answer.strip().replace('\n', ' ')
 
