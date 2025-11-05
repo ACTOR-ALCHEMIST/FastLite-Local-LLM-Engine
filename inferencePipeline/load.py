@@ -7,8 +7,8 @@ print('num_threads', torch.get_num_threads())
 
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['HF_HUB_OFFLINE'] = '1'  # Jiang: allow online HF downloads
-os.environ['TRANSFORMERS_OFFLINE'] = '1'  # Jiang: allow online transformers fetch
+os.environ['HF_HUB_OFFLINE'] = '0'  # Jiang: allow online HF downloads
+os.environ['TRANSFORMERS_OFFLINE'] = '0'  # Jiang: allow online transformers fetch
 
 
 
@@ -31,7 +31,7 @@ class MyModel:
         return answers
 
     def get_model(self):
-        model_name = 'Qwen/Qwen3-0.6B' # Jiang: changed to Qwen3-4B
+        model_name = 'google/gemma-3-270m-it' # Jiang: changed to Qwen3-4B
         print('Loading model:', model_name)  # Jiang: debug print
 
         # cache_dir = './app/models'  # Jiang: changed to relative path
