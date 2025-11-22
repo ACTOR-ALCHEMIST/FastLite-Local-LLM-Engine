@@ -6,7 +6,7 @@ os.environ['TRANSFORMERS_OFFLINE'] = '1'
 
 import datetime
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import re
 
 class MyModel:
@@ -15,7 +15,7 @@ class MyModel:
         self.get_model()
 
     def get_model(self):
-        model_name = 'Qwen/Qwen3-4B' 
+        model_name = 'Qwen/Qwen3-8B' 
         cache_dir = r'/app/models'
         print(f"Loading model {model_name} from {cache_dir}")
 
@@ -32,14 +32,20 @@ class MyModel:
             self.tokenizer.pad_token = self.tokenizer.eos_token
             self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
 
+        # 量化配置 - 取消注释以启用 (Quantization Config - Uncomment to enable)
+        quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16, bnb_4bit_use_double_quant=True, bnb_4bit_quant_type="nf4")  # 4-bit量化
+        # quant_config = BitsAndBytesConfig(load_in_8bit=True, bnb_8bit_compute_dtype=torch.float16)  # 8-bit量化
+        # quant_config = None  # 无量化 (默认)
+
         # 加载模型
         self.model = AutoModelForCausalLM.from_pretrained(
             pretrained_model_name_or_path=model_name,
             cache_dir=cache_dir,
-            device_map=self.device,
+            device_map=self.device if quant_config is None else "auto",
             torch_dtype=torch.float16,
             trust_remote_code=True,
-            attn_implementation="sdpa"
+            attn_implementation="sdpa",
+            quantization_config=quant_config
         )
         self.model.eval()
 
