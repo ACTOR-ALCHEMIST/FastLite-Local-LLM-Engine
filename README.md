@@ -1,49 +1,50 @@
-# Tech Arena 2025 Phase 2 - Inference Pipeline
+# Tech Arena 2025 Phase 2 - Inference Pipeline 🏆
 
-本项目用于 Tech Arena 2025 Phase 2 比赛的推理管道开发与测试。包含本地开发、云端同步及测试脚本。
+> **2nd Place Winner** in the Tech Arena 2025 Phase 2 Competition.
 
-## 📂 目录结构
-*   `inferencePipeline/`: 推理核心代码文件夹
-    *   `load.py`: **[核心]** 模型加载与推理逻辑实现
-    *   `__init__.py`: 模块导出
-*   `run.py`: 测试入口脚本，包含测试题目集
-*   `deploy_and_test.sh`: **[推荐]** 一键部署与测试脚本
-*   `user.pem`: 服务器访问密钥
+This project implements a high-performance inference pipeline designed for the Tech Arena 2025 competition. It leverages the **Qwen3-4B** model with advanced optimization techniques to achieve a balance between speed and accuracy, tailored for T4 GPU environments.
 
-## 🚀 快速开始
+## ✨ Key Features
 
-### 1. 准备工作
-确保 `user.pem` 密钥文件位于当前项目根目录下。
+*   **Adaptive Complexity Detection**: Automatically categorizes queries into `simple`, `medium`, or `complex` to dynamically adjust inference parameters (batch size, max tokens).
+*   **Dynamic Batching**: Optimizes throughput by grouping queries of similar complexity.
+*   **Model Optimization**: Supports 4-bit/8-bit quantization (via `BitsAndBytesConfig`) for efficient memory usage on T4 GPUs.
+*   **Prompt Engineering**: Implements direct-answer prompts and judge-guided injection to maximize scoring potential.
+*   **Automated Deployment**: Includes a one-click script for seamless synchronization and testing on cloud servers.
 
-### 2. 一键测试
-在终端运行以下命令，即可自动同步代码到服务器并运行测试：
+## 🚀 Quick Start
+
+### 1. Prerequisites
+Ensure your `user.pem` key file is located in the project root.
+
+### 2. One-Click Deploy & Test
+Run the following command to sync code to the server and execute the test suite:
 
 ```bash
 ./deploy_and_test.sh
 ```
 
-> **脚本功能说明**：
-> 1.  自动设置密钥权限。
-> 2.  将本地的 `inferencePipeline` 文件夹和 `run.py` 同步到云端服务器。
-> 3.  在服务器上执行测试，并将日志**实时**回显到本地终端。
+**What this script does:**
+1.  Sets correct permissions for the key.
+2.  Syncs `inferencePipeline/` and `run.py` to the remote server.
+3.  Executes the inference pipeline and streams logs back to your local terminal.
 
-## 🛠 维护指南
+## � Project Structure
 
-### 如何修改代码
-1.  **优化模型逻辑**：编辑 `inferencePipeline/load.py`。这是比赛主要评分的代码部分。
-2.  **调整测试题目**：编辑 `run.py` 可以增减 `QUESTION_BANK` 中的题目，用于快速验证。
+*   `inferencePipeline/`: Core inference logic.
+    *   `load.py`: **[Core]** Model loading, complexity detection, and batch inference implementation.
+*   `run.py`: Entry point for testing with a predefined question bank.
+*   `deploy_and_test.sh`: Automated deployment script.
 
-### 手动连接服务器 (可选)
-如果需要手动登录服务器进行调试，可以使用以下命令：
+## 🛠 Maintenance
 
-```bash
-# 修改权限 (仅需一次)
-chmod 600 user.pem
+*   **Model Logic**: Modify `inferencePipeline/load.py` to adjust the model, prompt strategies, or generation configs.
+*   **Test Cases**: Update `run.py` to add or remove questions in `QUESTION_BANK` for rapid validation.
 
-# 登录服务器
-ssh -i user.pem user@34.242.203.50
-```
+## 📝 Notes
 
-## 📝 注意事项
-*   **日志监控**：`deploy_and_test.sh` 已配置实时日志输出，你可以看到正在处理的题目ID和内容。
-*   **服务器环境**：代码运行在云端 Linux 环境，请确保代码兼容性（本项目已处理基础兼容性）。
+*   **Environment**: Optimized for Cloud Linux environments with T4 GPUs.
+*   **Monitoring**: Real-time logs are provided via the deployment script for immediate feedback.
+
+---
+*Developed for Tech Arena 2025.*
